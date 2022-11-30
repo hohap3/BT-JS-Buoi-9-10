@@ -29,8 +29,9 @@ function Employee(
   };
 
   this.totalSalary = function () {
-    if (this.position === "Sếp") return this.salary * 3;
-    else if (this.position === "Trưởng phòng") return this.salary * 2;
-    else return this.salary;
+    if (this.position === "Sếp") return (this.salary * 3).toLocaleString();
+    else if (this.position === "Trưởng phòng")
+      return (this.salary * 2).toLocaleString();
+    else return this.salary.toLocaleString();
   };
 }

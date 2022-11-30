@@ -152,7 +152,7 @@ function renderEmployee(dataList) {
         <td>${employee.email}</td>
         <td>${employee.date}</td>
         <td>${employee.position}</td>
-        <td>${formatMoney(employee.totalSalary())}</td>
+        <td>${employee.totalSalary()} VNĐ</td>
         <td>${employee.categorizeEmployee()}</td>
         <td>
           <button id="btn-delete" class="btn btn-danger" onclick="handleRemoveEmployee(${
@@ -160,7 +160,7 @@ function renderEmployee(dataList) {
           })" ><i class="fa fa-trash" aria-hidden="true"></i></button>
         </td>
         <td>
-          <button id="btn-delete" class="btn btn-success" onclick="handleUpdateEmployee(${
+          <button id="btn-update" class="btn btn-success" onclick="handleUpdateEmployee(${
             employee.id
           })" ><i class="fa fa-cog" aria-hidden="true"></i></button>
         </td>
@@ -224,22 +224,83 @@ function handleRemoveEmployee(id) {
 
   var index = getIndexById(id);
 
-  // // Xóa value trong employeeList
-  employeeList.splice(index, 1);
+  var employee = employeeList[index];
 
-  // // Lưu vào localStorage
-  saveLocalStorage(EMPLOYEE_LIST, employeeList);
+  Swal.fire({
+    title: `Bạn có muốn xóa tài khoản ${employee.account} ?`,
+    text: "Bạn không thể quay lại được !",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Xóa tài khoản",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // // Xóa value trong employeeList
+      employeeList.splice(index, 1);
 
-  // Update DOM
-  var trElement = document.querySelector(`tr[data-id="${id}"]`);
-  if (!trElement) return;
-  trElement.remove();
+      // // Lưu vào localStorage
+      saveLocalStorage(EMPLOYEE_LIST, employeeList);
+
+      // Update DOM
+      var trElement = document.querySelector(`tr[data-id="${id}"]`);
+      if (!trElement) return;
+      trElement.remove();
+
+      Swal.fire(
+        `Đã xóa tài khoản ${employee.account}`,
+        `Tài khoản ${employee.account} đã được xóa hoàn toàn!`,
+        "success"
+      );
+    }
+  });
 }
+
+function cancelUpdate() {
+  var cancelUpdateBtn = document.querySelector("#btnHuyCapNhat");
+  var formElement = document.querySelector("#form");
+  var updateBtn = document.querySelector("#btnCapNhat");
+  var submitBtn = document.querySelector("#btnThemNV");
+  var titleHeader = document.querySelector("#header-title");
+  var accountInput = document.querySelector("#tknv");
+  var addBtn = document.getElementById("btnThem");
+
+  if (
+    !cancelUpdateBtn ||
+    !formElement ||
+    !updateBtn ||
+    !submitBtn ||
+    !titleHeader ||
+    !accountInput ||
+    !addBtn
+  )
+    return;
+
+  cancelUpdateBtn.addEventListener("click", function () {
+    mode = "create";
+    formElement.reset();
+    this.classList.add("d-none");
+    updateBtn.classList.add("d-none");
+    submitBtn.classList.remove("d-none");
+    titleHeader.textContent = "Log In";
+    accountInput.disabled = false;
+    addBtn.textContent = "Thêm nhân viên";
+  });
+}
+
+cancelUpdate();
 
 // Update nhân viên
 
 function handleUpdateEmployee(id) {
   if (!id) return;
+
+  var submitBtn = document.querySelector("#btnThemNV");
+  var cancelUpdateBtn = document.querySelector("#btnHuyCapNhat");
+  var updateBtn = document.querySelector("#btnCapNhat");
+  var titleHeader = document.querySelector("#header-title");
+
+  if (!submitBtn || !cancelUpdateBtn || !updateBtn || !titleHeader) return;
 
   var index = getIndexById(id);
   if (index < 0) return alert(`${id} không tồn tại!`);
@@ -274,6 +335,19 @@ function handleUpdateEmployee(id) {
 
   // Update mode
   mode = "update";
+
+  // hide nút thêm nhân viên
+  submitBtn.classList.add("d-none");
+
+  // Show nút hủy update
+  cancelUpdateBtn.classList.remove("d-none");
+
+  // Show nút update
+  updateBtn.classList.remove("d-none");
+
+  // Update dom
+  titleHeader.textContent = "Update";
+  addBtn.textContent = "Cập nhật nhân viên";
 
   // Hiển thị ra form
   addBtn.click();
@@ -452,7 +526,7 @@ function validateForm() {
  * config : {
  *  errorId:string,
  *  pattern:object,
- * type:string
+ *  type:string
  * }
  *
  */

@@ -368,8 +368,19 @@
             <button id="btnThemNV" type="button" class="btn btn-success">
               Thêm người dùng
             </button>
-            <button id="btnCapNhat" type="button" class="btn btn-success">
+            <button
+              id="btnCapNhat"
+              type="button"
+              class="btn btn-success d-none"
+            >
               Cập nhật
+            </button>
+            <button
+              id="btnHuyCapNhat"
+              type="button"
+              class="btn btn-primary d-none"
+            >
+              Hủy cập nhật
             </button>
             <button
               id="btnDong"
@@ -410,6 +421,8 @@
         });
       });
     </script>
+
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script src="./js/models/employee.js"></script>
     <script src="./js/main.js"></script>
